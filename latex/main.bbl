@@ -1,0 +1,97 @@
+\begin{thebibliography}{13}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Adams et~al.(1997)Adams, Wilson, and Wang]{adams1997}
+Raymond~J Adams, Mark Wilson, and Wen-chung Wang.
+\newblock The multidimensional random coefficients multinomial logit model.
+\newblock \emph{Applied Psychological Measurement}, 21:\penalty0 1--23, 1997.
+
+\bibitem[De~Boeck and Wilson(2004)]{deboeck2004}
+Paul De~Boeck and Mark Wilson.
+\newblock \emph{Explanatory Item Response Models: A Generalized Linear and
+  Nonlinear Approach}.
+\newblock Springer, 2004.
+
+\bibitem[Fischer(1973)]{fischer1973}
+Gerhard~H Fischer.
+\newblock The linear logistic test model as an instrument in educational
+  research.
+\newblock \emph{Acta Psychologica}, 37:\penalty0 359--374, 1973.
+
+\bibitem[Kang(2026)]{kang2026pcr}
+Jung~Min Kang.
+\newblock Psychometric content routing: Frontier-value selection for
+  user-conditioned {LLM} processing.
+\newblock \emph{arXiv preprint}, 2026.
+
+\bibitem[Lord(1971)]{lord1971tailored}
+Frederic~M. Lord.
+\newblock Robbins-monro procedures for tailored testing.
+\newblock \emph{Educational and Psychological Measurement}, 31\penalty0
+  (1):\penalty0 3--31, 1971.
+
+\bibitem[Lord(1980)]{lord1980}
+Frederic~M Lord.
+\newblock \emph{Applications of Item Response Theory to Practical Testing
+  Problems}.
+\newblock Lawrence Erlbaum, 1980.
+
+\bibitem[Lord and Novick(1968)]{lord1968}
+Frederic~M Lord and Melvin~R Novick.
+\newblock \emph{Statistical Theories of Mental Test Scores}.
+\newblock Addison-Wesley, 1968.
+
+\bibitem[Park et~al.(2019)Park, Joo, Cornillie, van~der Maas, and Van~den
+  Noortgate]{park2019coldstart}
+Jung~Yeon Park, Seang-Hwane Joo, Frederik Cornillie, Han L.~J. van~der Maas,
+  and Wim Van~den Noortgate.
+\newblock An explanatory item response theory method for alleviating the
+  cold-start problem in adaptive learning environments.
+\newblock \emph{Behavior Research Methods}, 51:\penalty0 895--909, 2019.
+\newblock \doi{10.3758/s13428-018-1166-9}.
+
+\bibitem[Pliakos et~al.(2019)Pliakos, Joo, Park, Cornillie, Vens, and Van~den
+  Noortgate]{pliakos2019coldstart}
+Konstantinos Pliakos, Seang-Hwane Joo, Jung~Yeon Park, Frederik Cornillie,
+  Celine Vens, and Wim Van~den Noortgate.
+\newblock Integrating machine learning into item response theory for addressing
+  the cold start problem in adaptive learning systems.
+\newblock \emph{Computers \& Education}, 137:\penalty0 91--103, 2019.
+\newblock \doi{10.1016/j.compedu.2019.04.009}.
+
+\bibitem[Song et~al.(2025)Song, Huang, Cheng, Gao, Xu, Zhao, Wang, and
+  Wu]{song2025irt}
+Wei Song, Zhenya Huang, Cheng Cheng, Weibo Gao, Bihan Xu, GuanHao Zhao, Fei
+  Wang, and Runze Wu.
+\newblock {IRT}-router: Effective and interpretable multi-{LLM} routing via
+  item response theory.
+\newblock In \emph{Proceedings of the 63rd Annual Meeting of the Association
+  for Computational Linguistics (Volume 1: Long Papers)}, pages 15629--15644,
+  2025.
+
+\bibitem[van~der Velde et~al.(2021)van~der Velde, Sense, Borst, and van
+  Rijn]{vandervelde2021coldstart}
+Maarten van~der Velde, Florian Sense, Jelmer Borst, and Hedderik van Rijn.
+\newblock Alleviating the cold start problem in adaptive learning using
+  data-driven difficulty estimates.
+\newblock \emph{Computational Brain \& Behavior}, 4\penalty0 (2):\penalty0
+  231--249, 2021.
+\newblock \doi{10.1007/s42113-021-00101-6}.
+
+\bibitem[Vygotsky(1978)]{vygotsky1978}
+Lev~S Vygotsky.
+\newblock \emph{Mind in Society: The Development of Higher Psychological
+  Processes}.
+\newblock Harvard University Press, 1978.
+
+\bibitem[Yang et~al.(2026)Yang, Chen, Feng, Zhang, and Li]{yang2026zpd}
+Bo~Yang, Yunkui Chen, Lanfei Feng, Yu~Zhang, and Shijian Li.
+\newblock {ZPD} detector: Data selection via capability--difficulty alignment
+  for large language models.
+\newblock \emph{arXiv preprint arXiv:2601.10986}, 2026.
+
+\end{thebibliography}
