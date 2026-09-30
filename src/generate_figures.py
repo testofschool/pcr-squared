@@ -3,7 +3,7 @@
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
-matplotlib.rcParams["pdf.fonttype"] = 42  # Type 1 fonts, no Type 3
+matplotlib.rcParams["pdf.fonttype"] = 42  # TrueType (Type 42) fonts, no Type 3
 matplotlib.rcParams["ps.fonttype"] = 42
 import matplotlib.pyplot as plt
 from scipy.special import expit
@@ -119,7 +119,7 @@ fig, axes = plt.subplots(1, 2, figsize=(5.5, 2.8))
 axes[0].scatter(true_thetas, theta_cold, s=12, alpha=0.6, c='#2166ac')
 axes[0].plot([-3,4],[-3,4],'k--',alpha=0.3)
 axes[0].set_xlabel('True $\\theta$'); axes[0].set_ylabel('Estimated $\\hat\\theta$ (cold-start)')
-rho=np.corrcoef(theta_cold,true_thetas)[0,1]; axes[0].set_title(f'$\\rho = {rho:.3f}$'); axes[0].grid(True,alpha=0.3)
+rho=np.corrcoef(theta_cold,true_thetas)[0,1]; axes[0].set_title(f'Pearson $r = {rho:.3f}$'); axes[0].grid(True,alpha=0.3)
 axes[1].bar(range(1,4),pca.explained_variance_ratio_[:3],color='#2166ac',alpha=0.7)
 axes[1].set_xlabel('Principal Component'); axes[1].set_ylabel('Variance Explained')
 axes[1].set_title(f'PCA: {pca.explained_variance_ratio_[:3].sum()*100:.1f}% in 3 PCs')
@@ -233,4 +233,4 @@ ax.set_title('Robustness to $\\theta$ Estimation Noise')
 ax.legend(handles=[l1,l2],fontsize=9,loc='center right'); ax.grid(True,alpha=0.3)
 plt.tight_layout(); plt.savefig(FIGDIR/'fig7_robustness.pdf'); plt.close(); print("  fig7")
 
-print("All figures generated (Type 1 fonts, relative paths, log-scale Fig 6).")
+print("All figures generated (TrueType/Type 42 fonts, no Type 3; relative paths, log-scale Fig 6).")

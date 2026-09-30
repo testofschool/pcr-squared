@@ -33,7 +33,7 @@
 \maketitle
 
 \begin{abstract}
-Psychometric Content Routing (PCR; Kang, 2026) selects content chunks for LLM processing using the IRT frontier value $\mathcal{F}(\theta, b)=P(1{-}P)$, which peaks when user ability $\theta$ matches content difficulty $b$. However, PCR assumes $\theta$ is known. We introduce PCR$^2$, which estimates $\theta$ from observable user covariates via PCA-compressed latent regression (De Boeck \& Wilson, 2004). In an interaction-free synthetic cold-start simulation with 58 real Wikipedia article summaries and 100 user profiles, PCR$^2$ recovers $\rho=0.963$ between estimated and true ability, capturing 96.9\% of oracle routing quality. Against difficulty-only selection, PCR$^2$ achieves Cohen's $d=1.84$ ($p<10^{-15}$, 86/100 wins). A production smoke test reveals two critical findings: (1)~LLTM handcrafted text features fail on encyclopedic text ($\rho=0.068$), requiring learned embeddings for real deployment; (2)~a simulated relevance oracle that models ideal query-based retrieval achieves 99.4\% of oracle quality, suggesting that PCR's advantage is domain-specific to same-topic multi-level corpora where relevance alone cannot distinguish difficulty. We provide scaling analysis, noise robustness ablation, and open-source implementation. Code and data: \url{https://github.com/testofschool/pcr-squared}
+Psychometric Content Routing (PCR; Kang, 2026) selects content chunks for LLM processing using the IRT frontier value $\mathcal{F}(\theta, b)=P(1{-}P)$, which peaks when user ability $\theta$ matches content difficulty $b$. However, PCR assumes $\theta$ is known. We introduce PCR$^2$, which estimates $\theta$ from observable user covariates via PCA-compressed latent regression (De Boeck \& Wilson, 2004). In an interaction-free synthetic cold-start simulation with 58 real Wikipedia article summaries and 100 synthetic user profiles, PCR$^2$ recovers a Pearson correlation of $r=0.963$ between estimated and true ability, capturing 96.9\% of oracle routing quality. Against difficulty-only selection, PCR$^2$ achieves Cohen's $d=1.84$ ($p<10^{-15}$, 86/100 wins). A smoke test on real text (only the Wikipedia text is real; users, covariates, responses, and relevance are synthetic) reveals two critical findings: (1)~LLTM handcrafted text features fail on encyclopedic text ($\rho=0.068$), requiring learned embeddings for real deployment; (2)~a simulated relevance oracle that models ideal query-based retrieval achieves 99.4\% of oracle quality, suggesting that PCR's advantage is domain-specific to same-topic multi-level corpora where relevance alone cannot distinguish difficulty. We provide scaling analysis, noise robustness ablation, and open-source implementation. Code and data: \url{https://github.com/testofschool/pcr-squared}
 \end{abstract}
 
 \section{Introduction}
@@ -45,17 +45,17 @@ However, PCR has several limitations acknowledged in the original work. Limitati
 We address both limitations. Our contributions:
 
 \begin{enumerate}
-    \item \textbf{PCR$^2$}: We estimate $\theta$ from observable user covariates via PCA-compressed latent regression, demonstrating an interaction-free $\theta$-estimation pathway ($\rho=0.963$, cold-start capable in simulation).
-    \item \textbf{Production smoke test}: We evaluate on 58 real Wikipedia article summaries with genuine NLP features, revealing that LLTM handcrafted features fail on encyclopedic text ($\rho=0.068$).
+    \item \textbf{PCR$^2$}: We estimate $\theta$ from observable user covariates via PCA-compressed latent regression, demonstrating an interaction-free $\theta$-estimation pathway (Pearson $r=0.963$, cold-start capable in simulation).
+    \item \textbf{Real-text smoke test}: We evaluate on 58 real Wikipedia article summaries with genuine NLP features (only the text is real; users, covariates, responses, and relevance remain synthetic), revealing that LLTM handcrafted features fail on encyclopedic text ($\rho=0.068$).
     \item \textbf{Strong baseline analysis}: We show that a simulated relevance oracle achieves 99.4\% of oracle quality, identifying the deployment niche where PCR adds value.
-    \item \textbf{Scaling and robustness}: PCR advantage grows from $1.2\times$ to $3.6\times$ with corpus difficulty diversity, and survives $\theta$ estimation noise up to $\sigma=2.0$.
+    \item \textbf{Scaling and robustness}: PCR advantage grows from $1.2\times$ to $3.5\times$ with corpus difficulty diversity, and survives $\theta$ estimation noise up to $\sigma=2.0$.
 \end{enumerate}
 
 \subsection{Relationship to Prior Work}
 
 The frontier value function $\mathcal{F}=P(1{-}P)$ is mathematically equivalent to Fisher information in the 1PL IRT model (Lord, 1980), the foundational principle of Computerized Adaptive Testing since 1971~\cite{lord1971tailored, lord1980}. Estimating $\theta$ from covariates for cold-start scenarios has been explored in adaptive learning~\cite{park2019coldstart, pliakos2019coldstart, vandervelde2021coldstart}. Song et al.~\cite{song2025irt} route queries \emph{between} LLMs; Yang et al.~\cite{yang2026zpd} use IRT for \emph{training} data selection. PCR's contribution is applying the frontier-value signal to user-facing content routing at inference time; PCR$^2$ adds covariate-based $\theta$ estimation to make this deployable.
 
-We are transparent: the mathematical components are classical. The contribution is the system integration, the production-level evaluation with honest failure analysis, and the identification of where PCR does and does not outperform standard retrieval.
+We are transparent: the mathematical components are classical. The contribution is the system integration, the evaluation on real text (with synthetic users) with honest failure analysis, and the identification of where PCR does and does not outperform standard retrieval.
 
 \section{Method}
 
@@ -100,7 +100,7 @@ avoiding the two-step bias that arises when estimated $\hat\theta$ values are us
 
 PCR requires difficulty estimates $\hat{b}_i$. We evaluate:
 
-\textbf{LLTM features}~\cite{fischer1973}: $\hat{b}_i = \sum_f w_f q_{if}$ with five handcrafted text features (sentence-length variance, long-word ratio, mean sentence length, inverse type-token ratio, average word length) and fixed weights from Kang~\cite{kang2026pcr}.
+\textbf{LLTM features}~\cite{fischer1973}: $\hat{b}_i = \sum_f w_f q_{if}$ with five handcrafted text features (sentence-length variance, long-word ratio, mean sentence length, inverse type-token ratio, average word length) and the fixed weights of Kang~\cite{kang2026pcr} ($w = [1.5, 0.8, 0.6, 1.2, 0.3]$). The feature set is modified relative to that work: feature~5 is average word length, whereas Kang~\cite{kang2026pcr} uses the frequency of context-dependency words; and mean sentence length is normalized by 30 rather than 20. The weights were carried over unchanged and were not re-fit for these modified features.
 
 \textbf{Assigned labels}: Author- or curriculum-assigned difficulty levels, validated by LLM rating ($\rho=0.919$ in the original PCR paper).
 
@@ -132,9 +132,10 @@ Computational cost of steps 1--5: one matrix multiply, $N$ sigmoid evaluations, 
 
 \subsection{Users}
 
-100 synthetic user profiles with five observable covariates (education years, reading frequency, domain familiarity, age, vocabulary level) generated with controlled correlation to true $\theta \in [-2.6, +3.1]$. No interaction-history covariates are used, ensuring an interaction-free cold-start simulation. Response matrix: $100 \times 58$ with 35\% sparsity.
+100 synthetic user profiles with five observable covariates (education years, reading frequency, domain familiarity, age, vocabulary level) generated with controlled correlation to true $\theta \in [-2.6, +3.1]$: each covariate is a linear function of true $\theta$ plus Gaussian noise, clipped to a plausible range. No interaction-history covariates are used, ensuring an interaction-free cold-start simulation. Response matrix: $100 \times 58$ with 35\% sparsity; binary responses are drawn from the Rasch model using true $\theta$ and the assigned $b$. Only the passage text is real; users, covariates, responses, and the relevance model (Section~\ref{sec:strategies}) are synthetic.
 
 \subsection{Strategies}
+\label{sec:strategies}
 
 \begin{enumerate}
     \item \textbf{Oracle PCR}: True $\theta$, assigned $b$ (upper bound).
@@ -157,7 +158,7 @@ Budget: $K=8$ of 58 passages (14\%).
 
 \subsection{Ability Estimation Quality}
 
-PCR-IRT latent regression achieves $\rho(\hat\theta, \theta_{\mathrm{true}}) = 0.963$ in cold-start mode (covariates only) and $R^2(\mathrm{person}) = 0.867$ (Figure~\ref{fig:theta}). Three principal components capture 92.4\% of covariate variance.
+PCR-IRT latent regression achieves a Pearson correlation $r(\hat\theta, \theta_{\mathrm{true}}) = 0.963$ (Spearman $\rho = 0.961$) in cold-start mode (covariates only) and $R^2(\mathrm{person}) = 0.867$ (Figure~\ref{fig:theta}). Three principal components capture 92.4\% of covariate variance.
 
 \begin{figure}[t]
     \centering
@@ -168,7 +169,7 @@ PCR-IRT latent regression achieves $\rho(\hat\theta, \theta_{\mathrm{true}}) = 0
 
 \subsection{LLTM Feature Failure}
 
-LLTM handcrafted features achieve only $\rho=0.068$ ($p=0.61$) on Wikipedia text (Figure~\ref{fig:lltm}). The ``Water'' article has \emph{higher} sentence-length variance (0.365) than ``Quantum field theory'' (0.340) because encyclopedic prose normalizes surface complexity. Readability features cannot distinguish conceptual difficulty within the same register. This falsifies the ``API-free'' claim for heterogeneous corpora.
+LLTM handcrafted features achieve only $\rho=0.068$ ($p=0.61$) on Wikipedia text (Figure~\ref{fig:lltm}). The ``Water'' article has \emph{higher} sentence-length variance (0.396) than ``Quantum field theory'' (0.283) because encyclopedic prose normalizes surface complexity. Readability features cannot distinguish conceptual difficulty within the same register. This falsifies the ``API-free'' claim for heterogeneous corpora.
 
 \begin{figure}[t]
     \centering
@@ -222,7 +223,7 @@ Figure~\ref{fig:comparison} shows strategy comparison and per-ability selections
 
 \subsection{Scaling with Corpus Diversity}
 
-Figure~\ref{fig:scaling_robust}(a) shows PCR advantage as a function of difficulty diversity $\sigma_b$. At low diversity ($\sigma_b = 0.43$), PCR provides $1.2\times$ advantage over random. At high diversity ($\sigma_b = 5.16$), the advantage reaches $3.6\times$ over random and $>400\times$ over difficulty-only (which collapses when extreme items dominate). Note: the log scale is used because the difficulty-only ratio grows superlinearly.
+Figure~\ref{fig:scaling_robust}(a) shows PCR advantage as a function of difficulty diversity $\sigma_b$. At low diversity ($\sigma_b = 0.43$), PCR provides $1.2\times$ advantage over random. At high diversity ($\sigma_b = 5.16$), the advantage reaches $3.5\times$ over random and $>400\times$ over difficulty-only (which collapses when extreme items dominate). The latter ratio is degenerate and should not be read as an effect size: at $\sigma_b = 5.16$, difficulty-only captures a mean frontier value of only 0.003 (vs.\ 1.40 for PCR and 0.40 for random), so the ratio is driven by a near-zero denominator. Note: the log scale is used because the difficulty-only ratio grows superlinearly.
 
 \subsection{Robustness to Ability Estimation Noise}
 
@@ -276,7 +277,7 @@ PCR$^2$ instantiates the \emph{Person Explanatory Model} cell of the De Boeck \&
 
 \section{Conclusion}
 
-PCR$^2$ demonstrates an interaction-free $\theta$-estimation pathway for Psychometric Content Routing via PCA-compressed latent regression. In synthetic simulation, the method captures 96.9\% of oracle routing quality with $d=1.84$ against difficulty-only selection. However, honest production evaluation reveals that (1)~LLTM handcrafted features fail on real text, requiring learned difficulty estimation, and (2)~a simulated relevance oracle achieves near-perfect routing, limiting PCR's advantage to same-topic multi-level corpora where relevance alone cannot distinguish difficulty. We provide complete code, data, and negative results to support reproducible evaluation.
+PCR$^2$ demonstrates an interaction-free $\theta$-estimation pathway for Psychometric Content Routing via PCA-compressed latent regression. In synthetic simulation, the method captures 96.9\% of oracle routing quality with $d=1.84$ against difficulty-only selection. However, the real-text smoke test (real Wikipedia text; synthetic users, covariates, responses, and relevance) reveals that (1)~LLTM handcrafted features fail on real text, requiring learned difficulty estimation, and (2)~a simulated relevance oracle achieves near-perfect routing, limiting PCR's advantage to same-topic multi-level corpora where relevance alone cannot distinguish difficulty. We provide complete code, data, and negative results to support reproducible evaluation.
 
 \section*{Reproducibility}
 
